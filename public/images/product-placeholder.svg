@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="960" height="720" viewBox="0 0 960 720" role="img" aria-labelledby="title desc">
+  <title id="title">NutriCycle product placeholder</title>
+  <desc id="desc">Green abstract product package with leaf motif.</desc>
+  <rect width="960" height="720" fill="#ecfdf5"/>
+  <circle cx="760" cy="140" r="120" fill="#bbf7d0"/>
+  <circle cx="170" cy="570" r="150" fill="#dcfce7"/>
+  <rect x="280" y="150" width="400" height="420" rx="34" fill="#16a34a"/>
+  <rect x="330" y="205" width="300" height="95" rx="18" fill="#f0fdf4"/>
+  <path d="M480 360c62-84 148-94 194-80-5 66-50 145-158 154 17-45 46-79 88-103-55 15-98 48-124 103-32-64-83-102-148-120 48 31 82 73 101 126-112-11-164-91-169-160 56-16 151-7 216 80z" fill="#dcfce7"/>
+  <text x="480" y="265" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="38" font-weight="700" fill="#166534">NutriCycle</text>
+  <text x="480" y="520" text-anchor="middle" font-family="Inter, Arial, sans-serif" font-size="26" font-weight="600" fill="#f0fdf4">Pakan Daur Ulang</text>
+</svg>
