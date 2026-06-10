@@ -1,4 +1,4 @@
-# NutriCycle
+# NutriCycle - Ubah sampah beranak jadi Pakan ternak
 
 NutriCycle adalah aplikasi Laravel untuk layanan pickup sampah organik dan penjualan pakan ternak hasil daur ulang.
 
