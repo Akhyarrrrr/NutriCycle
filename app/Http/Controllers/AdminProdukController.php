@@ -29,13 +29,18 @@ class AdminProdukController extends Controller
 
     public function store(Request $request): RedirectResponse
     {
-        $validated = $request->validate($this->rules());
+        $validated = $request->validate($this->rules(requiresImage: true));
+        $uploadedImage = $this->cloudinary->upload($request->file('gambar'));
+
+        if ($uploadedImage === null) {
+            return back()
+                ->withInput()
+                ->withErrors(['gambar' => 'Gambar gagal diunggah. Coba pilih file gambar lain atau cek konfigurasi Cloudinary.']);
+        }
 
         $validated['slug'] = $this->uniqueSlug($validated['nama']);
         $validated['is_active'] = $request->boolean('is_active');
-        $validated['gambar'] = $request->hasFile('gambar')
-            ? $this->cloudinary->upload($request->file('gambar'))
-            : null;
+        $validated['gambar'] = $uploadedImage;
 
         Produk::create($validated);
 
@@ -60,10 +65,14 @@ class AdminProdukController extends Controller
         if ($request->hasFile('gambar')) {
             $newImage = $this->cloudinary->upload($request->file('gambar'));
 
-            if ($newImage !== null) {
-                $this->cloudinary->delete($produk->gambar);
-                $validated['gambar'] = $newImage;
+            if ($newImage === null) {
+                return back()
+                    ->withInput()
+                    ->withErrors(['gambar' => 'Gambar gagal diunggah. Perubahan produk belum disimpan.']);
             }
+
+            $this->cloudinary->delete($produk->gambar);
+            $validated['gambar'] = $newImage;
         }
 
         $produk->update($validated);
@@ -80,12 +89,12 @@ class AdminProdukController extends Controller
         return back()->with('success', 'Produk berhasil dihapus.');
     }
 
-    private function rules(): array
+    private function rules(bool $requiresImage = false): array
     {
         return [
             'nama' => ['required', 'string', 'max:255'],
             'deskripsi' => ['required', 'string'],
-            'gambar' => ['nullable', 'image', 'max:4096'],
+            'gambar' => [$requiresImage ? 'required' : 'nullable', 'image', 'max:4096'],
             'harga' => ['required', 'integer', 'min:0'],
             'stok' => ['required', 'integer', 'min:0'],
             'kategori' => ['required', 'string', 'max:100'],

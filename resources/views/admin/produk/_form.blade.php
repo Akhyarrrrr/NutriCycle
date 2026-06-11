@@ -3,7 +3,7 @@
     @method('PUT')
 @endif
 
-<div class="grid gap-6" x-data="{ imagePreview: @js(isset($produk) && $produk->gambar ? cloudinaryUrl($produk->gambar) : null) }">
+<div class="grid gap-6" x-data="{ imagePreview: @js(isset($produk) && $produk->gambar ? cloudinaryUrl($produk->gambar) : null), fileName: '' }">
     <div>
         <label for="nama" class="form-label">Nama Produk</label>
         <input id="nama" name="nama" value="{{ old('nama', $produk->nama ?? '') }}" required class="form-input mt-2 @error('nama') border-red-400 focus:border-red-500 focus:ring-red-500 @enderror" placeholder="Contoh: Pakan Maggot Premium">
@@ -47,13 +47,14 @@
             </div>
             <div>
                 <div class="text-sm font-black text-slate-900">Pilih gambar produk</div>
-                <p class="mt-1 text-sm leading-6 text-slate-500">Format JPG, PNG, atau WEBP. Maksimal 4 MB.</p>
-                <div class="mt-3 inline-flex rounded-lg bg-white px-3 py-2 text-xs font-bold text-green-700 shadow-sm">Browse file</div>
+                <p class="mt-1 text-sm leading-6 text-slate-500">Format JPG, PNG, atau WEBP. Maksimal 4 MB. {{ isset($produk) ? 'Kosongkan jika tidak ingin mengganti gambar.' : 'Wajib diisi untuk produk baru.' }}</p>
+                <div class="mt-3 inline-flex rounded-lg bg-white px-3 py-2 text-xs font-bold text-green-700 shadow-sm" x-text="fileName || 'Browse file'"></div>
             </div>
         </label>
-        <input id="gambar" type="file" name="gambar" accept="image/*" class="sr-only" x-on:change="
+        <input id="gambar" type="file" name="gambar" accept="image/*" class="sr-only" @if(! isset($produk)) required @endif x-on:change="
             const file = $event.target.files[0];
             if (!file) return;
+            fileName = file.name;
             const reader = new FileReader();
             reader.onload = event => imagePreview = event.target.result;
             reader.readAsDataURL(file);

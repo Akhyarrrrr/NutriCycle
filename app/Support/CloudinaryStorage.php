@@ -4,6 +4,8 @@ namespace App\Support;
 
 use Cloudinary\Cloudinary;
 use Illuminate\Http\UploadedFile;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Str;
 use Throwable;
 
 class CloudinaryStorage
@@ -11,7 +13,7 @@ class CloudinaryStorage
     public function upload(UploadedFile $file): ?string
     {
         if (blank(config('cloudinary.url'))) {
-            return null;
+            return $this->storeLocally($file);
         }
 
         $cloudinary = new Cloudinary(config('cloudinary.url'));
@@ -25,13 +27,28 @@ class CloudinaryStorage
             return $result['public_id'] ?? null;
         } catch (Throwable $e) {
             report($e);
-            return null;
+
+            return $this->storeLocally($file);
         }
     }
 
     public function delete(?string $publicId): void
     {
-        if (blank($publicId) || blank(config('cloudinary.url'))) {
+        if (blank($publicId)) {
+            return;
+        }
+
+        if (str_starts_with($publicId, 'local:')) {
+            $path = public_path(Str::after($publicId, 'local:'));
+
+            if (File::exists($path)) {
+                File::delete($path);
+            }
+
+            return;
+        }
+
+        if (blank(config('cloudinary.url'))) {
             return;
         }
 
@@ -41,6 +58,28 @@ class CloudinaryStorage
             $cloudinary->uploadApi()->destroy($publicId, ['resource_type' => 'image']);
         } catch (Throwable $exception) {
             report($exception);
+        }
+    }
+
+    private function storeLocally(UploadedFile $file): ?string
+    {
+        try {
+            $directory = public_path('uploads/produk');
+
+            if (! File::isDirectory($directory)) {
+                File::makeDirectory($directory, 0755, true);
+            }
+
+            $extension = $file->extension() ?: $file->guessExtension() ?: 'jpg';
+            $filename = Str::uuid().'.'.$extension;
+
+            $file->move($directory, $filename);
+
+            return 'local:uploads/produk/'.$filename;
+        } catch (Throwable $e) {
+            report($e);
+
+            return null;
         }
     }
 }

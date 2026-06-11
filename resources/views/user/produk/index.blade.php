@@ -27,16 +27,16 @@
                 <article class="card card-hover group overflow-hidden" data-aos="fade-up" data-aos-delay="{{ ($loop->index % 3) * 80 }}">
                     <div class="relative overflow-hidden">
                         <a href="{{ route('produk.show', $item->slug) }}">
-                            <img src="{{ cloudinaryUrl($item->gambar) }}" alt="{{ $item->nama }}" class="aspect-square w-full rounded-t-xl object-cover transition-all duration-300 group-hover:scale-105">
+                            <img src="{{ cloudinaryUrl($item->gambar) }}" alt="{{ $item->nama }}" class="aspect-square w-full rounded-t-lg object-cover transition-all duration-300 group-hover:scale-105">
                         </a>
                         <span class="absolute left-3 top-3 rounded-full bg-white/90 px-3 py-1 text-xs font-black text-green-700 shadow-sm backdrop-blur">{{ $item->kategori }}</span>
                         <span class="absolute right-3 top-3 rounded-full px-3 py-1 text-xs font-black shadow-sm {{ $stockClass }}">Stok {{ $item->stok }}</span>
-                        <a href="{{ route('produk.show', $item->slug) }}" class="absolute inset-x-4 bottom-4 translate-y-4 rounded-lg bg-green-600 px-4 py-2 text-center text-sm font-bold text-white opacity-0 shadow-md transition-all duration-200 group-hover:translate-y-0 group-hover:opacity-100">Lihat Detail</a>
                     </div>
                     <div class="flex min-h-64 flex-col p-5">
                         <h2 class="text-lg font-black text-slate-900"><a href="{{ route('produk.show', $item->slug) }}">{{ $item->nama }}</a></h2>
                         <p class="mt-2 flex-1 text-sm leading-6 text-slate-500">{{ \Illuminate\Support\Str::limit($item->deskripsi, 108) }}</p>
                         <div class="mt-4 text-xl font-black text-green-700">Rp{{ number_format($item->harga, 0, ',', '.') }}</div>
+                        <a href="{{ route('produk.show', $item->slug) }}" class="btn-secondary mt-4 w-full py-2.5">Lihat Detail</a>
                         <form method="POST" action="{{ route('keranjang.add', $item) }}" class="mt-4">
                             @csrf
                             <button class="btn-primary w-full" @disabled($item->stok <= 0)>
