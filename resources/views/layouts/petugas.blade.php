@@ -8,31 +8,68 @@
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+        <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans antialiased">
-        <div class="min-h-screen bg-slate-50 lg:flex">
-            <aside class="border-b border-slate-200 bg-white lg:fixed lg:inset-y-0 lg:w-72 lg:border-b-0 lg:border-r">
-                <div class="flex h-16 items-center px-5 lg:h-20">
-                    <a href="{{ route('petugas.dashboard') }}"><x-application-logo /></a>
+        <div x-data="{ sidebar: false }" class="min-h-screen bg-slate-50 lg:flex">
+            <div x-cloak x-show="sidebar" x-transition.opacity class="fixed inset-0 z-40 bg-slate-950/50 lg:hidden" x-on:click="sidebar = false"></div>
+            <aside class="fixed inset-y-0 left-0 z-50 flex w-72 -translate-x-full flex-col bg-green-950 text-white shadow-2xl transition-transform duration-200 lg:translate-x-0" :class="sidebar ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'">
+                <div class="flex h-20 items-center justify-between px-5">
+                    <a href="{{ route('petugas.dashboard') }}" class="text-white"><x-application-logo class="text-white" /></a>
+                    <button type="button" class="rounded-lg p-2 text-white/70 hover:bg-white/10 hover:text-white lg:hidden" x-on:click="sidebar = false" aria-label="Tutup menu">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
                 </div>
-                <nav class="grid gap-1 px-3 pb-4 lg:pb-0">
-                    <a href="{{ route('petugas.dashboard') }}" class="rounded-lg px-4 py-3 text-sm font-semibold {{ request()->routeIs('petugas.dashboard') ? 'bg-green-50 text-green-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">Dashboard</a>
-                    <a href="{{ route('petugas.pickup.index') }}" class="rounded-lg px-4 py-3 text-sm font-semibold {{ request()->routeIs('petugas.pickup.*') ? 'bg-green-50 text-green-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">Pickup</a>
-                    <a href="{{ route('petugas.pengiriman.index') }}" class="rounded-lg px-4 py-3 text-sm font-semibold {{ request()->routeIs('petugas.pengiriman.*') ? 'bg-green-50 text-green-700' : 'text-slate-600 hover:bg-slate-100 hover:text-slate-900' }}">Pengiriman</a>
-                    <form method="POST" action="{{ route('logout') }}" class="mt-2">
-                        @csrf
-                        <button type="submit" class="w-full rounded-lg px-4 py-3 text-left text-sm font-semibold text-slate-600 hover:bg-slate-100 hover:text-slate-900">Keluar</button>
-                    </form>
+                <nav class="grid gap-1 px-3">
+                    <a href="{{ route('petugas.dashboard') }}" class="flex items-center gap-3 rounded-xl border-l-4 px-4 py-3 text-sm font-semibold {{ request()->routeIs('petugas.dashboard') ? 'border-green-300 bg-white/12 text-white' : 'border-transparent text-green-50/75 hover:border-green-400 hover:bg-white/10 hover:text-white' }}">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M3.75 12h16.5M12 3.75v16.5M4.5 19.5h15a.75.75 0 0 0 .75-.75v-15A.75.75 0 0 0 19.5 3h-15a.75.75 0 0 0-.75.75v15c0 .414.336.75.75.75Z" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        Dashboard
+                    </a>
+                    <a href="{{ route('petugas.pickup.index') }}" class="flex items-center gap-3 rounded-xl border-l-4 px-4 py-3 text-sm font-semibold {{ request()->routeIs('petugas.pickup.*') ? 'border-green-300 bg-white/12 text-white' : 'border-transparent text-green-50/75 hover:border-green-400 hover:bg-white/10 hover:text-white' }}">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M8.25 18.75a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3Zm7.5 0a1.5 1.5 0 1 0 0-3 1.5 1.5 0 0 0 0 3ZM3.75 6h11.5l3 4.5h2v5.25H18M3.75 6v9.75h3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        Pickup
+                    </a>
+                    <a href="{{ route('petugas.pengiriman.index') }}" class="flex items-center gap-3 rounded-xl border-l-4 px-4 py-3 text-sm font-semibold {{ request()->routeIs('petugas.pengiriman.*') ? 'border-green-300 bg-white/12 text-white' : 'border-transparent text-green-50/75 hover:border-green-400 hover:bg-white/10 hover:text-white' }}">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20.25 7.5 12 2.25 3.75 7.5m16.5 0L12 12.75m8.25-5.25v9L12 21.75m0-9L3.75 7.5m8.25 5.25v9" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                        Pengiriman
+                    </a>
                 </nav>
+                <div class="mt-auto border-t border-white/10 p-4">
+                    <div class="rounded-xl bg-white/10 p-3">
+                        <div class="text-sm font-bold">{{ auth()->user()->name }}</div>
+                        <div class="mt-1 text-xs text-green-50/70">Petugas Lapangan</div>
+                    </div>
+                    <form method="POST" action="{{ route('logout') }}" class="mt-3">
+                        @csrf
+                        <button type="submit" class="flex w-full items-center gap-2 rounded-xl px-3 py-2 text-sm font-bold text-red-200 hover:bg-red-500/10 hover:text-red-100">
+                            <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M15.75 9V5.25A2.25 2.25 0 0 0 13.5 3h-6A2.25 2.25 0 0 0 5.25 5.25v13.5A2.25 2.25 0 0 0 7.5 21h6a2.25 2.25 0 0 0 2.25-2.25V15m3-3h-9m9 0-3-3m3 3-3 3" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+                            Keluar
+                        </button>
+                    </form>
+                </div>
             </aside>
             <main class="w-full lg:pl-72">
-                <div class="mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
+                <header class="sticky top-0 z-30 border-b border-slate-200 bg-white/80 px-4 py-3 shadow-sm backdrop-blur-sm lg:hidden">
+                    <button type="button" x-on:click="sidebar = true" class="rounded-lg p-2 text-slate-700 hover:bg-green-50 hover:text-green-700" aria-label="Buka menu">
+                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
+                    </button>
+                </header>
+                <div class="page-transition mx-auto max-w-7xl px-4 py-8 sm:px-6 lg:px-8">
                     @include('partials.flash')
                     @yield('content')
                 </div>
             </main>
         </div>
+
+        <script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+        <script>
+            window.addEventListener('load', function () {
+                if (window.AOS) {
+                    AOS.init({ duration: 600, once: true });
+                }
+            });
+        </script>
         @stack('scripts')
     </body>
 </html>

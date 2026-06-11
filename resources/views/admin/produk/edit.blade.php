@@ -1,8 +1,10 @@
 @extends('layouts.admin')
 
 @section('content')
-    <form method="POST" action="{{ route('admin.produk.update', $produk) }}" enctype="multipart/form-data" class="mx-auto max-w-3xl rounded-lg border border-slate-200 bg-white p-6">
-        <h1 class="mb-6 text-3xl font-black text-slate-900">Edit Produk</h1>
+    <form method="POST" action="{{ route('admin.produk.update', $produk) }}" enctype="multipart/form-data" class="card mx-auto max-w-4xl p-6" data-aos="fade-up">
+        <p class="text-sm font-black uppercase tracking-[0.22em] text-green-700">Katalog</p>
+        <h1 class="mt-2 text-3xl font-black text-slate-900">Edit Produk</h1>
+        <p class="mb-6 mt-2 text-sm text-slate-500">Perbarui informasi produk {{ $produk->nama }}.</p>
         @include('admin.produk._form', ['produk' => $produk])
     </form>
 @endsection

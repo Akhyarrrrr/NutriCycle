@@ -1,26 +1,38 @@
 @extends('layouts.app')
 
 @section('content')
+    @php
+        $stockClass = $produk->stok <= 0 ? 'bg-red-100 text-red-700' : ($produk->stok <= 10 ? 'bg-yellow-100 text-yellow-800' : 'bg-green-100 text-green-700');
+    @endphp
+
     <div class="grid gap-8 lg:grid-cols-[1fr_0.9fr]">
-        <img src="{{ cloudinaryUrl($produk->gambar) }}" alt="{{ $produk->nama }}" class="h-full min-h-[420px] w-full rounded-lg object-cover">
-        <section class="rounded-lg border border-slate-200 bg-white p-6">
-            <div class="text-sm font-bold uppercase tracking-[0.2em] text-green-700">{{ $produk->kategori }}</div>
-            <h1 class="mt-3 text-3xl font-black text-slate-900">{{ $produk->nama }}</h1>
-            <p class="mt-4 leading-7 text-slate-600">{{ $produk->deskripsi }}</p>
-            <div class="mt-6 grid grid-cols-2 gap-4">
-                <div class="rounded-lg bg-green-50 p-4">
-                    <div class="text-sm font-semibold text-green-700">Harga</div>
-                    <div class="mt-1 text-2xl font-black text-green-900">Rp{{ number_format($produk->harga, 0, ',', '.') }}</div>
-                </div>
-                <div class="rounded-lg bg-slate-100 p-4">
-                    <div class="text-sm font-semibold text-slate-600">Stok</div>
-                    <div class="mt-1 text-2xl font-black text-slate-900">{{ $produk->stok }}</div>
-                </div>
+        <div class="card overflow-hidden" data-aos="fade-up">
+            <img src="{{ cloudinaryUrl($produk->gambar) }}" alt="{{ $produk->nama }}" class="aspect-square w-full object-cover">
+        </div>
+        <section class="card p-6 lg:p-8" data-aos="fade-up" data-aos-delay="100">
+            <div class="flex flex-wrap items-center gap-2">
+                <span class="rounded-full bg-green-100 px-3 py-1 text-xs font-black uppercase tracking-wide text-green-700">{{ $produk->kategori }}</span>
+                <span class="rounded-full px-3 py-1 text-xs font-black {{ $stockClass }}">Stok {{ $produk->stok }}</span>
             </div>
-            <form method="POST" action="{{ route('keranjang.add', $produk) }}" class="mt-6 flex flex-col gap-3 sm:flex-row">
+            <h1 class="mt-4 text-3xl font-black text-slate-900 sm:text-4xl">{{ $produk->nama }}</h1>
+            <p class="mt-4 leading-7 text-slate-600">{{ $produk->deskripsi }}</p>
+            <div class="mt-6 rounded-xl bg-green-50 p-5">
+                <div class="text-sm font-bold text-green-700">Harga</div>
+                <div class="mt-1 text-3xl font-black text-green-900">Rp{{ number_format($produk->harga, 0, ',', '.') }}</div>
+            </div>
+            <form method="POST" action="{{ route('keranjang.add', $produk) }}" class="mt-6" x-data="{ qty: 1 }">
                 @csrf
-                <input type="number" name="jumlah" min="1" max="{{ max($produk->stok, 1) }}" value="1" class="w-full rounded-lg border border-slate-300 px-3 py-3 sm:w-32">
-                <button class="rounded-lg bg-green-600 px-6 py-3 font-bold text-white hover:bg-green-700" @disabled($produk->stok <= 0)>Tambah ke Keranjang</button>
+                <label for="jumlah" class="form-label">Jumlah</label>
+                <div class="mt-2 flex flex-col gap-3 sm:flex-row">
+                    <div class="flex rounded-lg border border-slate-300 bg-white shadow-sm">
+                        <button type="button" x-on:click="qty = Math.max(1, qty - 1)" class="px-4 text-lg font-black text-slate-600 hover:bg-slate-50">-</button>
+                        <input id="jumlah" type="number" name="jumlah" min="1" max="{{ max($produk->stok, 1) }}" x-model.number="qty" class="w-20 border-0 text-center font-bold focus:ring-0">
+                        <button type="button" x-on:click="qty = Math.min({{ max($produk->stok, 1) }}, qty + 1)" class="px-4 text-lg font-black text-slate-600 hover:bg-slate-50">+</button>
+                    </div>
+                    <button class="btn-primary flex-1" @disabled($produk->stok <= 0)>
+                        Tambah ke Keranjang
+                    </button>
+                </div>
             </form>
         </section>
     </div>

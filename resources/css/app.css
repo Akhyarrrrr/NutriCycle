@@ -18,8 +18,12 @@
         display: none !important;
     }
 
+    html {
+        scroll-behavior: smooth;
+    }
+
     body {
-        @apply bg-slate-50 text-slate-900;
+        @apply bg-slate-50 text-slate-900 selection:bg-green-200 selection:text-green-950;
     }
 
     a,
@@ -27,6 +31,56 @@
     input,
     select,
     textarea {
-        @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2;
+        @apply transition-all duration-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-green-600 focus-visible:ring-offset-2;
+    }
+}
+
+@layer components {
+    .page-transition {
+        animation: page-fade-slide 420ms ease-out both;
+    }
+
+    .card {
+        @apply rounded-lg border border-slate-200 bg-white shadow-sm transition-all duration-200;
+    }
+
+    .card-hover {
+        @apply hover:-translate-y-0.5 hover:shadow-md;
+    }
+
+    .btn-primary {
+        @apply inline-flex items-center justify-center gap-2 rounded-lg bg-green-600 px-5 py-3 text-sm font-bold text-white shadow-sm transition-all duration-200 hover:bg-green-700 hover:shadow-md disabled:cursor-not-allowed disabled:opacity-60;
+    }
+
+    .btn-secondary {
+        @apply inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-5 py-3 text-sm font-bold text-slate-700 shadow-sm transition-all duration-200 hover:border-green-200 hover:bg-green-50 hover:text-green-700 hover:shadow-md;
+    }
+
+    .form-input {
+        @apply w-full rounded-lg border border-slate-300 bg-white px-3 py-2.5 text-sm text-slate-900 shadow-sm transition-all duration-200 placeholder:text-slate-400 focus:border-green-600 focus:ring-green-600;
+    }
+
+    .form-label {
+        @apply text-sm font-semibold text-slate-700;
+    }
+
+    .table-shell {
+        @apply overflow-x-auto rounded-lg border border-slate-200 bg-white shadow-sm;
+    }
+
+    .icon-button {
+        @apply inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 shadow-sm transition-all duration-200 hover:border-green-200 hover:bg-green-50 hover:text-green-700 hover:shadow-md;
+    }
+}
+
+@keyframes page-fade-slide {
+    from {
+        opacity: 0;
+        transform: translateY(14px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
     }
 }

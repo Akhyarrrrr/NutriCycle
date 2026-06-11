@@ -23,7 +23,8 @@ class CloudinaryStorage
             ]);
 
             return $result['public_id'] ?? null;
-        } catch (Throwable) {
+        } catch (Throwable $e) {
+            report($e);
             return null;
         }
     }
