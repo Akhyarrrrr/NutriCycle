@@ -13,7 +13,7 @@ class CloudinaryStorage
     public function upload(UploadedFile $file): ?string
     {
         if (blank(config('cloudinary.url'))) {
-            return $this->storeLocally($file);
+            return $this->storeLocallyWhenAllowed($file);
         }
 
         $cloudinary = new Cloudinary(config('cloudinary.url'));
@@ -28,7 +28,7 @@ class CloudinaryStorage
         } catch (Throwable $e) {
             report($e);
 
-            return $this->storeLocally($file);
+            return $this->storeLocallyWhenAllowed($file);
         }
     }
 
@@ -81,5 +81,14 @@ class CloudinaryStorage
 
             return null;
         }
+    }
+
+    private function storeLocallyWhenAllowed(UploadedFile $file): ?string
+    {
+        if (! app()->environment(['local', 'testing'])) {
+            return null;
+        }
+
+        return $this->storeLocally($file);
     }
 }

@@ -15,11 +15,19 @@ if (! function_exists('cloudinaryUrl')) {
         }
 
         if (Str::startsWith($publicId, 'local:')) {
-            return asset(Str::after($publicId, 'local:'));
+            $relativePath = Str::after($publicId, 'local:');
+
+            return file_exists(public_path($relativePath))
+                ? asset($relativePath)
+                : asset('images/product-placeholder.svg');
         }
 
         if (Str::startsWith($publicId, ['uploads/', '/uploads/'])) {
-            return asset(ltrim($publicId, '/'));
+            $relativePath = ltrim($publicId, '/');
+
+            return file_exists(public_path($relativePath))
+                ? asset($relativePath)
+                : asset('images/product-placeholder.svg');
         }
 
         $cloudinaryUrl = config('cloudinary.url');
