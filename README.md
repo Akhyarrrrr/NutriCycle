@@ -58,6 +58,7 @@ APP_ENV=production
 APP_KEY=
 APP_DEBUG=false
 APP_URL=
+ASSET_URL=
 
 DB_CONNECTION=mysql
 DB_HOST=
