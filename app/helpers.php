@@ -39,7 +39,9 @@ if (! function_exists('cloudinaryUrl')) {
         try {
             $cloudinary = new Cloudinary($cloudinaryUrl);
 
-            return (string) $cloudinary->image($publicId)->toUrl($options);
+            return (string) (empty($options)
+                ? $cloudinary->image($publicId)->toUrl()
+                : $cloudinary->image($publicId)->toUrl($options));
         } catch (Throwable) {
             return asset('images/product-placeholder.svg');
         }
