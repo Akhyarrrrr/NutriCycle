@@ -1,12 +1,6 @@
 #!/usr/bin/env sh
 set -eu
 
-# ponytail: Vercel overlayfs corrupts /var/www/html — copy to writable tmpfs
-APP_DIR=/tmp/nutricycle-app
-rm -rf "$APP_DIR"
-cp -a /var/www/html "$APP_DIR"
-cd "$APP_DIR"
-
 mkdir -p "${VIEW_COMPILED_PATH:-/tmp/nutricycle/views}"
 export APP_CONFIG_CACHE=/tmp/nutricycle/config.php
 rm -f "$APP_CONFIG_CACHE" bootstrap/cache/config.php
