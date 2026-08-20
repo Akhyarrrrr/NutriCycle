@@ -26,8 +26,7 @@ RUN rm -f bootstrap/cache/*.php \
     && composer install --no-dev --optimize-autoloader --no-interaction \
     && npm ci \
     && npm run build \
-    && rm -rf node_modules \
-    && chmod +x docker/start-vercel.sh
+    && rm -rf node_modules
 
 ENV LOG_CHANNEL=stderr \
     SESSION_DRIVER=database \
@@ -36,4 +35,4 @@ ENV LOG_CHANNEL=stderr \
 
 EXPOSE 3000
 
-CMD ["/var/www/html/docker/start-vercel.sh"]
+CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=${PORT:-3000}"]
