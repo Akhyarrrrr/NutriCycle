@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->unsignedBigInteger('user_id')->index();
             $table->integer('jumlah');
-            $table->enum('tipe', ['masuk', 'keluar'])->index();
+            $table->string('tipe', 10)->default('masuk')->index();
             $table->string('keterangan');
             $table->string('ref_id')->nullable();
             $table->timestamps();

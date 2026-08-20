@@ -17,7 +17,7 @@ return new class extends Migration
             $table->time('jadwal_jam');
             $table->decimal('estimasi_kg', 5, 2);
             $table->text('catatan')->nullable();
-            $table->enum('status', ['menunggu', 'dikonfirmasi', 'dijemput', 'selesai', 'dibatalkan'])->default('menunggu')->index();
+            $table->string('status', 20)->default('menunggu')->index();
             $table->integer('poin_diberikan')->default(0);
             $table->timestamps();
         });

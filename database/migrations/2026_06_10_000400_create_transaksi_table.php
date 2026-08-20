@@ -17,8 +17,8 @@ return new class extends Migration
             $table->integer('diskon_poin')->default(0);
             $table->string('metode_bayar')->default('midtrans');
             $table->string('snap_token')->nullable();
-            $table->enum('status_pembayaran', ['pending', 'paid', 'failed'])->default('pending')->index();
-            $table->enum('status_pengiriman', ['menunggu', 'dikonfirmasi', 'dikirim', 'selesai'])->default('menunggu')->index();
+            $table->string('status_pembayaran', 20)->default('pending')->index();
+            $table->string('status_pengiriman', 20)->default('menunggu')->index();
             $table->text('alamat_kirim');
             $table->text('catatan')->nullable();
             $table->timestamps();
