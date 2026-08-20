@@ -16,4 +16,7 @@ if [ -n "${MYSQL_CA_CERT_BASE64:-}" ]; then
     export MYSQL_ATTR_SSL_CA=/tmp/aiven-ca.pem
 fi
 
+php artisan migrate --force
+php artisan db:seed --force
+
 exec php artisan serve --host=0.0.0.0 --port="${PORT:-3000}"
