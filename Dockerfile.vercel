@@ -22,17 +22,24 @@ WORKDIR /var/www/html
 
 COPY . .
 
-RUN rm -f bootstrap/cache/*.php \
-    && composer install --no-dev --optimize-autoloader --no-interaction \
-    && npm ci \
-    && npm run build \
-    && rm -rf node_modules
-
 ENV LOG_CHANNEL=stderr \
     SESSION_DRIVER=database \
     CACHE_STORE=database \
+    APP_CONFIG_CACHE=/tmp/nutricycle/config.php \
+    APP_EVENTS_CACHE=/tmp/nutricycle/events.php \
+    APP_PACKAGES_CACHE=/tmp/nutricycle/packages.php \
+    APP_ROUTES_CACHE=/tmp/nutricycle/routes.php \
+    APP_SERVICES_CACHE=/tmp/nutricycle/services.php \
     VIEW_COMPILED_PATH=/tmp/nutricycle/views
+
+RUN mkdir -p /tmp/nutricycle/views \
+    && rm -f bootstrap/cache/*.php \
+    && composer install --no-dev --optimize-autoloader --no-interaction \
+    && npm ci \
+    && npm run build \
+    && rm -rf node_modules \
+    && chmod +x docker/start-vercel.sh
 
 EXPOSE 3000
 
-CMD ["sh", "-c", "php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=${PORT:-3000}"]
+CMD ["/var/www/html/docker/start-vercel.sh"]

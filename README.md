@@ -14,7 +14,7 @@ NutriCycle adalah aplikasi Laravel untuk layanan pickup sampah organik dan penju
    cp .env.example .env
    php artisan key:generate
    ```
-3. Isi kredensial database MySQL, Midtrans sandbox, dan Cloudinary di `.env`.
+3. Isi kredensial database, Midtrans sandbox, dan Cloudinary di `.env`.
 4. Jalankan migrasi dan seeder.
    ```bash
    php artisan migrate:fresh --seed
@@ -32,23 +32,17 @@ NutriCycle adalah aplikasi Laravel untuk layanan pickup sampah organik dan penju
 - User: `rani@example.com` / `password`
 - User: `bima@example.com` / `password`
 
-## Railway Deploy
+## Deploy Vercel + Aiven Free
 
-1. Buat project Railway dan hubungkan repository.
-2. Tambahkan MySQL-compatible database, atau gunakan PlanetScale dengan kredensial MySQL.
-3. Set environment variable sesuai daftar di bawah.
-4. Gunakan build command:
+1. Buat service **Aiven for PostgreSQL Free**, lalu simpan host, port, database, username, dan password-nya.
+2. Inisialisasi database baru satu kali dari image aplikasi:
    ```bash
-   composer install --no-dev --optimize-autoloader && npm install && npm run build
+   php artisan migrate:fresh --seed --force
    ```
-5. Gunakan start command:
-   ```bash
-   php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT}
-   ```
-6. Jalankan seeder sekali dari shell Railway jika dibutuhkan:
-   ```bash
-   php artisan db:seed --force
-   ```
+3. Di Vercel, isi environment **Preview** dan **Production**: `APP_ENV=production`, `APP_DEBUG=false`, `APP_KEY`, `APP_URL`, `DB_CONNECTION=pgsql`, seluruh `DB_*`, dan `DB_SSLMODE=require`.
+4. Deploy Preview, lalu cek `/up`, `/`, dan `/login` sebelum mempromosikannya ke Production.
+
+Container menyimpan cache Laravel di `/tmp`, sehingga tidak bergantung pada `bootstrap/cache` yang dapat tertimpa pada runtime Vercel. Migration dan seeding sengaja tidak dijalankan saat cold start; jalankan secara terkontrol setiap ada perubahan schema.
 
 ## Environment Variables
 
@@ -60,9 +54,9 @@ APP_DEBUG=false
 APP_URL=
 ASSET_URL=
 
-DB_CONNECTION=mysql
+DB_CONNECTION=pgsql
 DB_HOST=
-DB_PORT=3306
+DB_PORT=5432
 DB_DATABASE=
 DB_USERNAME=
 DB_PASSWORD=
@@ -73,6 +67,7 @@ MIDTRANS_IS_PRODUCTION=false
 
 CLOUDINARY_URL=
 CLOUDINARY_FOLDER=nutricycle/produk
+DB_SSLMODE=require
 ```
 
 ## Notes
